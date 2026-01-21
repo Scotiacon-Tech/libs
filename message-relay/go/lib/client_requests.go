@@ -5,7 +5,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/Scotiacon-Tech/message-relay/client/requests"
+	"github.com/Scotiacon-Tech/libs/message-relay/go/requests"
 	"github.com/gofiber/fiber/v2"
 )
 

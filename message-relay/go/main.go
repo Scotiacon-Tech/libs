@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/Scotiacon-Tech/message-relay/client/lib"
+	"github.com/Scotiacon-Tech/libs/message-relay/go/lib"
 	"github.com/joho/godotenv"
 )
 

@@ -1,4 +1,4 @@
-module github.com/Scotiacon-Tech/message-relay/client
+module github.com/Scotiacon-Tech/libs/message-relay/go
 
 go 1.25.5
 
