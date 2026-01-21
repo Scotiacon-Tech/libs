@@ -36,7 +36,7 @@ func main() {
 	if res == nil {
 		log.Print(err)
 	} else {
-		log.Printf("Key: %s", res.NewKey)
-		log.Printf("MessageID: %s", res.MessageID)
+		log.Printf("New Key: %s", res.NewKey)
+		log.Printf("Message ID: %s", res.MessageID)
 	}
 }
