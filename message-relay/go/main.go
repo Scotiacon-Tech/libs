@@ -16,6 +16,7 @@ func main() {
 
 	keyArg := flag.String("key", "", "Auth Key")
 	serviceArg := flag.String("service", "", "Service Name")
+	fromArg := flag.String("from", "", "Message From")
 	toArg := flag.String("to", "", "Message Recipient")
 	subjectArg := flag.String("subject", "", "Message Subject")
 	bodyArg := flag.String("body", "", "Message Body")
@@ -24,7 +25,13 @@ func main() {
 
 	client := lib.NewClient()
 
-	res, err := client.SendMessage(*keyArg, *serviceArg, *toArg, *subjectArg, *bodyArg)
+	req := client.NewSendRequest()
+	req.From = *fromArg
+	req.To = *toArg
+	req.Subject = *subjectArg
+	req.Body = *bodyArg
+
+	res, err := client.SendMessage(*keyArg, *serviceArg, req)
 
 	if res == nil {
 		log.Print(err)

@@ -2,6 +2,8 @@ package lib
 
 import (
 	"errors"
+
+	"github.com/Scotiacon-Tech/libs/message-relay/go/requests"
 )
 
 type Client struct {
@@ -12,14 +14,23 @@ func NewClient() *Client {
 	return &Client{}
 }
 
-func (client Client) SendMessage(storedKey string, service string, to any, subject string, body string) (*SendResult, error) {
+func (client Client) NewSendRequest() *requests.SendRequest {
+	return &requests.SendRequest{
+		From:    "",
+		To:      "",
+		Subject: "",
+		Body:    "",
+	}
+}
+
+func (client Client) SendMessage(storedKey string, service string, req *requests.SendRequest) (*SendResult, error) {
 	if service == "" {
 		return nil, errors.New("Service name required")
 	}
 
 	key := storedKey
 
-	sendRes, sendErr := client.RequestSend(key, service, to, subject, body)
+	sendRes, sendErr := client.RequestSend(key, service, req)
 
 	if sendErr == KeyInvalidError {
 		jwtRes, jwtErr := client.RequestJWT()
@@ -36,7 +47,7 @@ func (client Client) SendMessage(storedKey string, service string, to any, subje
 
 		key = keyRes.Key
 
-		sendRes, sendErr = client.RequestSend(key, service, to, subject, body)
+		sendRes, sendErr = client.RequestSend(key, service, req)
 	}
 
 	if sendErr != nil {

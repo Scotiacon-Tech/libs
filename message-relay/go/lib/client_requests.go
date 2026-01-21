@@ -11,18 +11,12 @@ import (
 
 var KeyInvalidError = errors.New("Key Invalid")
 
-func (client Client) RequestSend(key string, service string, to any, subject string, body string) (*requests.SendResponse, error) {
+func (client Client) RequestSend(key string, service string, req *requests.SendRequest) (*requests.SendResponse, error) {
 	if key == "" {
 		return nil, KeyInvalidError
 	}
 
 	url := os.Getenv("SERVER_URL")
-
-	req := requests.SendRequest{
-		To:      to,
-		Subject: subject,
-		Body:    body,
-	}
 
 	reqBody, _ := json.Marshal(req)
 
