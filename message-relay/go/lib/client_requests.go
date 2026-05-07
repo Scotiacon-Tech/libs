@@ -2,14 +2,11 @@ package lib
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/Scotiacon-Tech/libs/message-relay/go/requests"
 	"github.com/gofiber/fiber/v2"
 )
-
-var KeyInvalidError = errors.New("Key Invalid")
 
 func (client Client) RequestSend(key string, service string, req *requests.SendRequest) (*requests.SendResponse, error) {
 	if key == "" {
@@ -30,14 +27,14 @@ func (client Client) RequestSend(key string, service string, req *requests.SendR
 	if code == 401 {
 		return nil, KeyInvalidError
 	} else if len(errs) > 0 || code != 200 {
-		return nil, errors.New("Request failed")
+		return nil, RequestFailedError
 	}
 
 	var sendRes requests.SendResponse
 	err := json.Unmarshal(res, &sendRes)
 
 	if err != nil {
-		return nil, errors.New("Failed to decode JSON")
+		return nil, JSONDecodeError
 	}
 
 	return &sendRes, nil
@@ -61,14 +58,14 @@ func (client Client) RequestJWT() (*requests.TokenResponse, error) {
 	code, res, errs := agent.Bytes()
 
 	if len(errs) > 0 || code != 200 {
-		return nil, errors.New("Request failed")
+		return nil, RequestFailedError
 	}
 
 	var tokenRes requests.TokenResponse
 	err := json.Unmarshal(res, &tokenRes)
 
 	if err != nil {
-		return nil, errors.New("Failed to decode JSON")
+		return nil, JSONDecodeError
 	}
 
 	return &tokenRes, nil
@@ -83,14 +80,14 @@ func (client Client) RequestKey(jwt string) (*requests.KeyResponse, error) {
 	code, res, errs := agent.Bytes()
 
 	if len(errs) > 0 || code != 200 {
-		return nil, errors.New("Request failed")
+		return nil, RequestFailedError
 	}
 
 	var keyRes requests.KeyResponse
 	err := json.Unmarshal(res, &keyRes)
 
 	if err != nil {
-		return nil, errors.New("Failed to decode JSON")
+		return nil, JSONDecodeError
 	}
 
 	return &keyRes, nil
