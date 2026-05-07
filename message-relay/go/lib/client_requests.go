@@ -3,7 +3,7 @@ package lib
 import (
 	"encoding/json"
 	"errors"
-	"os"
+	"fmt"
 
 	"github.com/Scotiacon-Tech/libs/message-relay/go/requests"
 	"github.com/gofiber/fiber/v2"
@@ -16,11 +16,11 @@ func (client Client) RequestSend(key string, service string, req *requests.SendR
 		return nil, KeyInvalidError
 	}
 
-	url := os.Getenv("SERVER_URL")
+	url := fmt.Sprintf("%s/send/%s", client.Config.ServerURL, service)
 
 	reqBody, _ := json.Marshal(req)
 
-	agent := fiber.Post(url + "/send/" + service)
+	agent := fiber.Post(url)
 	agent.Request().Header.Set("Authorization", "Bearer "+key)
 	agent.Request().Header.Set("Content-Type", "application/json")
 	agent.Body(reqBody)
@@ -44,19 +44,17 @@ func (client Client) RequestSend(key string, service string, req *requests.SendR
 }
 
 func (client Client) RequestJWT() (*requests.TokenResponse, error) {
-	url := os.Getenv("TOKEN_ENDPOINT")
-
 	req := requests.TokenRequest{
 		GrantType:    "client_credentials",
-		ClientID:     os.Getenv("CLIENT_ID"),
-		ClientSecret: os.Getenv("CLIENT_SECRET"),
-		Audience:     []string{os.Getenv("AUDIENCE_UUID")},
+		ClientID:     client.Config.ClientID,
+		ClientSecret: client.Config.ClientSecret,
+		Audience:     []string{client.Config.AudienceUUID},
 		Scope:        "openid",
 	}
 
 	reqBody, _ := json.Marshal(req)
 
-	agent := fiber.Post(url)
+	agent := fiber.Post(client.Config.TokenEndpoint)
 	agent.Request().Header.Set("Content-Type", "application/json")
 	agent.Body(reqBody)
 
@@ -77,9 +75,9 @@ func (client Client) RequestJWT() (*requests.TokenResponse, error) {
 }
 
 func (client Client) RequestKey(jwt string) (*requests.KeyResponse, error) {
-	url := os.Getenv("SERVER_URL")
+	url := fmt.Sprintf("%s/auth", client.Config.ServerURL)
 
-	agent := fiber.Post(url + "/auth")
+	agent := fiber.Post(url)
 	agent.Request().Header.Set("Authorization", "Bearer "+jwt)
 
 	code, res, errs := agent.Bytes()

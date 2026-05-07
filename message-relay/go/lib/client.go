@@ -7,11 +7,13 @@ import (
 )
 
 type Client struct {
-	Key string
+	Config *Config
 }
 
-func NewClient() *Client {
-	return &Client{}
+func NewClient(config *Config) *Client {
+	return &Client{
+		Config: config,
+	}
 }
 
 func (client Client) NewSendRequest() *requests.SendRequest {

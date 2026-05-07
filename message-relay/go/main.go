@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 
 	"github.com/Scotiacon-Tech/libs/message-relay/go/lib"
 	"github.com/joho/godotenv"
@@ -23,7 +24,15 @@ func main() {
 
 	flag.Parse()
 
-	client := lib.NewClient()
+	config := &lib.Config{
+		ServerURL:     os.Getenv("SERVER_URL"),
+		TokenEndpoint: os.Getenv("TOKEN_ENDPOINT"),
+		ClientID:      os.Getenv("CLIENT_ID"),
+		ClientSecret:  os.Getenv("CLIENT_SECRET"),
+		AudienceUUID:  os.Getenv("AUDIENCE_UUID"),
+	}
+
+	client := lib.NewClient(config)
 
 	req := client.NewSendRequest()
 	req.From = *fromArg
